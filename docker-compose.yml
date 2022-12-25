@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    networks:
+      - laraveltestnet
+    env_file: ./src/.env
+    ports:
+      - 3306:3306
+
+  mailhog:
+    image: mailhog/mailhog
+    networks:
+      - laraveltestnet
+    env_file: ./src/.env
+    ports:
+      - 1025:1025
+      - 8025:8025
+  
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - 9000:8000
+    networks:
+      - laraveltestnet
+    env_file: ./src/.env
+    volumes:
+      - ./src:/var/www/html
+
+networks:
+  laraveltestnet:
